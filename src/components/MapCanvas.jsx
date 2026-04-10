@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TransformComponent } from 'react-zoom-pan-pinch';
+import { TransformComponent } from "react-zoom-pan-pinch";
 import { useStore } from '../store/useStore';
 
 export default function MapCanvas() {
