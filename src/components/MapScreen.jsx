@@ -7,7 +7,7 @@ import BottomMenu from './BottomMenu';
 
 const zoomControlsRef = { current: { zoomIn: null, zoomOut: null } };
 
-function MapContent({ deviceView, selectedLotId, loading, error }) {
+function MapContent({ loading, error }) {
   const { zoomIn, zoomOut } = useControls();
   
   useEffect(() => {
@@ -15,39 +15,23 @@ function MapContent({ deviceView, selectedLotId, loading, error }) {
   }, [zoomIn, zoomOut]);
   
   return (
-    <div className="w-full h-full relative">
-      <div className="w-full h-full">
-        <MapCanvas />
-        
-        {/* Loading overlay */}
-        {loading && (
-          <div className="absolute inset-0 bg-[#D8E2E1]/80 flex items-center justify-center z-40">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 border-4 border-azul4 border-t-transparent rounded-full animate-spin" />
-              <span className="text-azul4 font-nexa font-bold text-sm tracking-wider">CARGANDO LOTES...</span>
-            </div>
+    <div className="w-full h-full">
+      <MapCanvas />
+      
+      {/* Loading overlay */}
+      {loading && (
+        <div className="absolute inset-0 bg-[#D8E2E1]/80 flex items-center justify-center z-40">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-4 border-azul4 border-t-transparent rounded-full animate-spin" />
+            <span className="text-azul4 font-nexa font-bold text-sm tracking-wider">CARGANDO LOTES...</span>
           </div>
-        )}
-
-        {/* Error message */}
-        {error && !loading && (
-          <div className="absolute top-4 left-4 right-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 z-40">
-            <p className="text-red-700 text-sm font-nexa text-center">{error}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Floating UI - Desktop */}
-      {selectedLotId && deviceView === 'desktop' && (
-        <div className="absolute z-50 pointer-events-none bottom-0 left-0 w-full">
-          <InfoCard isDesktop={true} />
         </div>
       )}
 
-      {/* Floating UI - Mobile/Tablet */}
-      {selectedLotId && deviceView !== 'desktop' && (
-        <div className="absolute z-50 pointer-events-none bottom-[70px] left-0">
-          <InfoCard isDesktop={false} />
+      {/* Error message */}
+      {error && !loading && (
+        <div className="absolute top-4 left-4 right-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 z-40">
+          <p className="text-red-700 text-sm font-nexa text-center">{error}</p>
         </div>
       )}
     </div>
@@ -97,7 +81,7 @@ export default function MapScreen({ deviceView = 'desktop' }) {
   }, []);
 
   return (
-    <div className="w-full h-[100dvh] bg-[#D8E2E1] overflow-hidden flex flex-col">
+    <div className="w-full h-[100dvh] bg-[#D8E2E1] overflow-hidden flex flex-col relative">
       {/* Contenedor del mapa - scroll nativo */}
       <div className="flex-1 min-h-0 overflow-hidden">
         <TransformWrapper
@@ -110,8 +94,6 @@ export default function MapScreen({ deviceView = 'desktop' }) {
         >
           <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
             <MapContent 
-              deviceView={deviceView} 
-              selectedLotId={selectedLotId} 
               loading={loading} 
               error={error} 
             />
@@ -119,8 +101,26 @@ export default function MapScreen({ deviceView = 'desktop' }) {
         </TransformWrapper>
       </div>
 
-      {/* Bottom Menu - fijo debajo, fuera del área de zoom */}
-      <div className="shrink-0">
+      {/* InfoCard Desktop - fijo encima del mapa */}
+      {selectedLotId && deviceView === 'desktop' && (
+        <div className="absolute z-50 bottom-[70px] left-0 w-full pointer-events-none">
+          <div className="pointer-events-auto">
+            <InfoCard isDesktop={true} />
+          </div>
+        </div>
+      )}
+
+      {/* InfoCard Mobile/Tablet - fijo debajo del mapa pero arriba del menú */}
+      {selectedLotId && deviceView !== 'desktop' && (
+        <div className="absolute z-50 bottom-[70px] left-0 pointer-events-none">
+          <div className="pointer-events-auto">
+            <InfoCard isDesktop={false} />
+          </div>
+        </div>
+      )}
+
+      {/* Bottom Menu - fijo debajo */}
+      <div className="shrink-0 z-50">
         <BottomMenu 
           onZoomIn={() => zoomControlsRef.current.zoomIn?.()} 
           onZoomOut={() => zoomControlsRef.current.zoomOut?.()} 
