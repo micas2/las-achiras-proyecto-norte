@@ -1,9 +1,55 @@
 import React, { useEffect, useRef } from 'react';
-import { TransformWrapper } from 'react-zoom-pan-pinch';
+import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
 import { useStore } from '../store/useStore';
 import MapCanvas from './MapCanvas';
 import InfoCard from './InfoCard';
 import BottomMenu from './BottomMenu';
+
+function MapContent({ deviceView, selectedLotId, loading, error }) {
+  const { zoomIn, zoomOut } = useControls();
+  
+  return (
+    <>
+      <div className="w-full h-[100dvh-70px] sm:h-[100dvh-80px] lg:h-[100dvh-96px] overflow-hidden">
+        <MapCanvas />
+        
+        {/* Loading overlay */}
+        {loading && (
+          <div className="absolute inset-0 bg-[#D8E2E1]/80 flex items-center justify-center z-40">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 border-4 border-azul4 border-t-transparent rounded-full animate-spin" />
+              <span className="text-azul4 font-nexa font-bold text-sm tracking-wider">CARGANDO LOTES...</span>
+            </div>
+          </div>
+        )}
+
+        {/* Error message */}
+        {error && !loading && (
+          <div className="absolute top-4 left-4 right-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 z-40">
+            <p className="text-red-700 text-sm font-nexa text-center">{error}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Floating UI - Desktop */}
+      {selectedLotId && deviceView === 'desktop' && (
+        <div className="absolute z-50 pointer-events-none bottom-0 left-0 w-full">
+          <InfoCard isDesktop={true} />
+        </div>
+      )}
+
+      {/* Floating UI - Mobile/Tablet */}
+      {selectedLotId && deviceView !== 'desktop' && (
+        <div className="absolute z-50 pointer-events-none bottom-[70px] left-0">
+          <InfoCard isDesktop={false} />
+        </div>
+      )}
+      
+      {/* Bottom Menu - dentro del área de zoom para que funcione useControls */}
+      <BottomMenu onZoomIn={zoomIn} onZoomOut={zoomOut} />
+    </>
+  );
+}
 
 export default function MapScreen({ deviceView = 'desktop' }) {
   const selectedLotId = useStore(state => state.selectedLotId);
@@ -59,46 +105,15 @@ export default function MapScreen({ deviceView = 'desktop' }) {
           centerOnInit={true}
           limitToBounds={false}
         >
-          <div className="w-full h-[100dvh-70px] sm:h-[100dvh-80px] lg:h-[100dvh-96px] overflow-hidden">
-            <MapCanvas />
-            
-            {/* Loading overlay */}
-            {loading && (
-              <div className="absolute inset-0 bg-[#D8E2E1]/80 flex items-center justify-center z-40">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-10 h-10 border-4 border-azul4 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-azul4 font-nexa font-bold text-sm tracking-wider">CARGANDO LOTES...</span>
-                </div>
-              </div>
-            )}
-
-            {/* Error message */}
-            {error && !loading && (
-              <div className="absolute top-4 left-4 right-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 z-40">
-                <p className="text-red-700 text-sm font-nexa text-center">{error}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Floating UI - Desktop */}
-          {selectedLotId && deviceView === 'desktop' && (
-            <div className="absolute z-50 pointer-events-none bottom-0 left-0 w-full">
-              <InfoCard isDesktop={true} />
-            </div>
-          )}
-
-          {/* Floating UI - Mobile/Tablet */}
-          {selectedLotId && deviceView !== 'desktop' && (
-            <div className="absolute z-50 pointer-events-none bottom-[70px] left-0">
-              <InfoCard isDesktop={false} />
-            </div>
-          )}
+          <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
+            <MapContent 
+              deviceView={deviceView} 
+              selectedLotId={selectedLotId} 
+              loading={loading} 
+              error={error} 
+            />
+          </TransformComponent>
         </TransformWrapper>
-      </div>
-
-      {/* Bottom Menu - siempre visible */}
-      <div className="shrink-0">
-        <BottomMenu />
       </div>
     </div>
   );

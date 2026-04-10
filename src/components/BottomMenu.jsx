@@ -1,10 +1,8 @@
 import React from 'react';
-import { useControls } from 'react-zoom-pan-pinch';
 import { Plus, Minus } from 'lucide-react';
 import Logo from './Logo';
 
-export default function BottomMenu() {
-  const { zoomIn, zoomOut } = useControls();
+export default function BottomMenu({ onZoomIn, onZoomOut }) {
 
   return (
     <div className="bg-white rounded-t-[20px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] px-3 py-4 sm:px-5 sm:py-5 md:px-6 md:py-5 flex flex-row items-center justify-between gap-2 sm:gap-4 md:gap-6 pointer-events-auto">
@@ -26,10 +24,10 @@ export default function BottomMenu() {
            {/* Zoom */}
            <div className="flex flex-col items-center justify-center gap-0.5 sm:gap-1">
              <div className="flex items-center justify-center gap-2 sm:gap-3">
-               <button onClick={() => zoomOut()} aria-label="Alejar zoom" className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 md:w-9 md:h-9 rounded-full border border-azul4 opacity-50 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm">
-                 <Minus size={16} sm:size={18} md:size={18} strokeWidth={3} className="text-azul4" />
-               </button>
-               <button onClick={() => zoomIn()} aria-label="Acercar zoom" className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 md:w-9 md:h-9 rounded-full border border-azul4 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm">
+<button onClick={onZoomOut} aria-label="Alejar zoom" className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 md:w-9 md:h-9 rounded-full border border-azul4 opacity-50 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm">
+                  <Minus size={16} sm:size={18} md:size={18} strokeWidth={3} className="text-azul4" />
+                </button>
+                <button onClick={onZoomIn} aria-label="Acercar zoom" className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 md:w-9 md:h-9 rounded-full border border-azul4 hover:bg-gray-50 transition-colors cursor-pointer shadow-sm">
                  <Plus size={16} sm:size={18} md:size={18} strokeWidth={3} className="text-azul4" />
                </button>
              </div>
