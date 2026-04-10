@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TransformComponent } from "react-zoom-pan-pinch";
 import { useStore } from '../store/useStore';
 
 export default function MapCanvas() {
@@ -133,13 +132,11 @@ export default function MapCanvas() {
   };
 
   return (
-    <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
-      <div 
-        ref={svgContainerRef}
-        onClick={handleSvgClick}
-        className="w-[3000px] h-[3000px] flex items-center justify-center pointer-events-auto"
-        dangerouslySetInnerHTML={{ __html: svgContent }} 
-      />
-    </TransformComponent>
+    <div 
+      ref={svgContainerRef}
+      onClick={handleSvgClick}
+      className="w-[3000px] h-[3000px] flex items-center justify-center pointer-events-auto"
+      dangerouslySetInnerHTML={{ __html: svgContent }} 
+    />
   );
 }
