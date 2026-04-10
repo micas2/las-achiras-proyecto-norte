@@ -33,8 +33,13 @@ export default function MapCanvas() {
     numeroManzanaGroups.forEach(group => {
       const textsParams = group.querySelectorAll('path, text, rect, circle, ellipse');
       textsParams.forEach(child => {
-        child.style.stroke = 'none';
-        child.style.strokeWidth = '0';
+        if (child.tagName === 'circle' || child.tagName === 'ellipse') {
+          child.style.stroke = 'white';
+          child.style.strokeWidth = '1px';
+        } else {
+          child.style.stroke = 'none';
+          child.style.strokeWidth = '0';
+        }
       });
     });
 
