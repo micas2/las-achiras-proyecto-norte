@@ -101,9 +101,9 @@ export default function MapScreen({ deviceView = 'desktop' }) {
         </TransformWrapper>
       </div>
 
-      {/* InfoCard Desktop - fijo encima del mapa */}
+      {/* InfoCard Desktop - fijo encima del menú */}
       {selectedLotId && deviceView === 'desktop' && (
-        <div className="absolute z-50 bottom-[70px] left-0 w-full pointer-events-none">
+        <div className="absolute z-50 left-0 w-full pointer-events-none" style={{ bottom: '70px' }}>
           <div className="pointer-events-auto">
             <InfoCard isDesktop={true} />
           </div>
